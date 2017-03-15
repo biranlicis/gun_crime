@@ -1,0 +1,309 @@
+/* Upload CSV file from local to linux*/
+
+pscp D:\putty\LAPD_Crime_2012_1.csv ccheong3@13.66.54.70:/home/ccheong3/dataset
+
+pscp D:\putty\LAPD_Crime_2013_1.csv ccheong3@13.66.54.70:/home/ccheong3/dataset
+
+pscp D:\putty\LAPD_Crime_2014_1.csv ccheong3@13.66.54.70:/home/ccheong3/dataset
+
+pscp D:\putty\LAPD_Crime_2015_1.csv ccheong3@13.66.54.70:/home/ccheong3/dataset
+
+
+
+/*/Download txt file from linux to local*/
+
+pscp ccheong3@13.66.54.70:/home/ccheong3/guncrime2012_output/000002_0  D:\putty
+
+pscp ccheong3@13.66.54.70:/home/ccheong3/guncrime2013_output/000002_0  D:\putty
+
+pscp ccheong3@13.66.54.70:/home/ccheong3/guncrime2014_output/000002_0  D:\putty
+
+pscp ccheong3@13.66.54.70:/home/ccheong3/guncrime2015_output/000002_0  D:\putty
+
+
+
+Create database if not exists finalp;
+
+use finalp;
+
+
+
+hdfs dfs -ls / 
+
+hdfs dfs -mkdir /dataset
+
+
+
+/*create new table for crime data in 2012*/
+
+hive
+
+use finalp;
+
+
+
+
+
+
+
+hdfs dfs -put LAPD_Crime_2012_1.csv /dataset/crime1
+
+
+
+hive 
+
+select * from crime_2012 LIMIT 10;
+
+
+
+mkdir guncrime2012
+
+
+
+/*create new table for crime data in 2013*/
+
+hive
+
+use finalp;
+
+
+
+Create external TABLE crime_2013 (Date_rptd date, Dr_no int, Date_occ date,Time_occ int,Area int, Area_Name string, RD int, Crm_cd int, Crm_Desc string, Status string, Status_desc string, Location string, Cross_street string, Location1 array<string>)
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/crime2';
+
+
+
+hdfs dfs -put LAPD_Crime_2013_1.csv /dataset/crime2
+
+
+
+hive 
+
+select * from crime_2013 LIMIT 10;
+
+
+
+
+
+
+
+/*create new table for crime data in 2014*/
+
+hive
+
+use finalp;
+
+
+
+Create external TABLE crime_2014 (Date_rptd date, Dr_no int, Date_occ date,Time_occ int,Area int, Area_Name string, RD int, Crm_cd int, Crm_Desc string, Status string, Status_desc string, Location string, Cross_street string, Location1 array<string>)
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/crime3';
+
+
+
+hdfs dfs -put LAPD_Crime_2014_1.csv /dataset/crime3
+
+
+
+hive 
+
+select * from crime_2014 LIMIT 10;
+
+
+
+/*create new table for crime data in 2014*/
+
+hive
+
+use finalp;
+
+
+
+Create external TABLE crime_2015 (Date_rptd date, Dr_no int, Date_occ date,Time_occ int,Area int, Area_Name string, RD int, Crm_cd int, Crm_Desc string, Status string, Status_desc string, Location string, Cross_street string, Location1 array<string>)
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/crime4';
+
+
+
+hdfs dfs -put LAPD_Crime_2015_1.csv /dataset/crime4
+
+
+
+hive 
+
+select * from crime_2015 LIMIT 10;
+
+
+
+
+
+CREATE TABLE if not exists violence2012
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/violence2012'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2012
+
+WHERE (Crm_Desc = 'ROBBERY' OR Crm_Desc LIKE '%RAPE%' OR Crm_Desc ='%CRIMINAL THREATS%' OR Crm_Desc LIKE '%SIMPLE ASSAULT%' OR Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%'OR Crm_Desc ='SHOTS FIRED AT INHABITED DWELLING' OR Crm_Desc LIKE '%TERRORIST%' OR Crm_Desc = 'BRANDISH WEAPON' OR Crm_Desc LIKE '%LETTERS%' OR Crm_Desc LIKE '%KIDNAPPING%' OR Crm_Desc = 'TRESPASSING');
+
+
+
+CREATE TABLE if not exists violence2013
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/violence2013'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2013
+
+WHERE (Crm_Desc = 'ROBBERY' OR Crm_Desc LIKE '%RAPE%' OR Crm_Desc ='%CRIMINAL THREATS%' OR Crm_Desc LIKE '%SIMPLE ASSAULT%' OR Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%'OR Crm_Desc ='SHOTS FIRED AT INHABITED DWELLING' OR Crm_Desc LIKE '%TERRORIST%' OR Crm_Desc = 'BRANDISH WEAPON' OR Crm_Desc LIKE '%LETTERS%' OR Crm_Desc LIKE '%KIDNAPPING%' OR Crm_Desc = 'TRESPASSING');
+
+
+
+CREATE TABLE if not exists violence2014
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/violence2014'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2014
+
+WHERE (Crm_Desc = 'ROBBERY' OR Crm_Desc LIKE '%RAPE%' OR Crm_Desc ='%CRIMINAL THREATS%' OR Crm_Desc LIKE '%SIMPLE ASSAULT%' OR Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%'OR Crm_Desc ='SHOTS FIRED AT INHABITED DWELLING' OR Crm_Desc LIKE '%TERRORIST%' OR Crm_Desc = 'BRANDISH WEAPON' OR Crm_Desc LIKE '%LETTERS%' OR Crm_Desc LIKE '%KIDNAPPING%' OR Crm_Desc = 'TRESPASSING');
+
+
+
+CREATE TABLE if not exists violence2015
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/violence2015'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2015
+
+WHERE (Crm_Desc = 'ROBBERY' OR Crm_Desc LIKE '%RAPE%' OR Crm_Desc ='%CRIMINAL THREATS%' OR Crm_Desc LIKE '%SIMPLE ASSAULT%' OR Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%'OR Crm_Desc ='SHOTS FIRED AT INHABITED DWELLING' OR Crm_Desc LIKE '%TERRORIST%' OR Crm_Desc = 'BRANDISH WEAPON' OR Crm_Desc LIKE '%LETTERS%' OR Crm_Desc LIKE '%KIDNAPPING%' OR Crm_Desc = 'TRESPASSING');
+
+
+
+
+
+CREATE TABLE if not exists guncrime2012 
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/guncrime2012'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2012
+
+WHERE (Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%' OR Crm_Desc = 'SHOTS FIRED AT INHABITED DWELLING');
+
+
+
+CREATE TABLE if not exists guncrime2013 
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/guncrime2013'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2013
+
+WHERE (Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%' OR Crm_Desc = 'SHOTS FIRED AT INHABITED DWELLING');
+
+
+
+CREATE TABLE if not exists guncrime2014 
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/guncrime2014'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2014
+
+WHERE (Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%' OR Crm_Desc = 'SHOTS FIRED AT INHABITED DWELLING');
+
+
+
+CREATE TABLE if not exists guncrime2015 
+
+ROW FORMAT DELIMITED 
+
+FIELDS TERMINATED BY "#"
+
+STORED AS TEXTFILE
+
+LOCATION '/dataset/guncrime2015'
+
+AS SELECT Dr_no, Date_occ, Area_Name, Crm_Desc, Location, Location1 FROM crime_2015
+
+WHERE (Crm_Desc = 'DISCHARGE FIREARMS/SHOTS FIRED' OR Crm_Desc LIKE '%ASSAULT WITH DEADLY WEAPON%' OR Crm_Desc = 'SHOTS FIRED AT INHABITED DWELLING');
+
+
+
+mkdir guncrime2012_output
+
+mkdir guncrime2013_output
+
+mkdir guncrime2014_output
+
+mkdir guncrime2015_output
+
+
+
+mkdir gunv2012_output
+
+mkdir gunv2013_output
+
+mkdir gunv2014_output
+
+mkdir gunv2015_output
+
+
+
+hdfs dfs -get /dataset/guncrime2012/000002_0/home/ccheong3/guncrime2012_output
