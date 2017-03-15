@@ -1,0 +1,51 @@
+DROP TABLE IF EXISTS NYPDcrime;
+
+CREATE EXTERNAL TABLE NYPDcrime(
+
+cmplntnum BIGINT,
+
+cmplntdate STRING,
+
+offence STRING,
+
+city STRING,
+
+latitude FLOAT,
+
+longitude FLOAT)
+
+ROW FORMAT DELIMITED
+
+FIELDS TERMINATED BY '|'
+
+STORED AS TEXTFILE LOCATION '/tmp/newyork1'
+
+tblproperties ('skip.header.line.count'='1');
+
+
+
+DROP TABLE IF EXISTS chicagocrime;
+
+CREATE EXTERNAL TABLE chicagocrime(
+
+id BIGINT,
+
+dat STRING,
+
+primarytype STRING,
+
+description STRING,
+
+year INT,
+
+latitude STRING,
+
+longitude FLOAT)
+
+ROW FORMAT DELIMITED
+
+FIELDS TERMINATED BY '|'
+
+STORED AS TEXTFILE LOCATION '/tmp/chicago1'
+
+tblproperties ('skip.header.line.count'='1');
